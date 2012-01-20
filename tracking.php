@@ -9,7 +9,7 @@ define("SCRAPERWIKI_QUERY", "select%20*%20from%20%60swdata%60%20where%20%60fligh
 // Function to fetch JSON for a specific flight from Scrapewiki.
 function getFlightInfo($flight_num, $date, $direction) {
 	
-	$direction = (strtolower($direction) == "d") ? "DEPARTURE" : "ARRIVAL";
+	$direction = (strtolower($direction) == "d") ? "MARITIMO" : "AEREO";
 	$query = str_replace(array("[[flight_num]]", "[[date]]", "[[direction]]"), array($flight_num, $date, $direction), SCRAPERWIKI_QUERY);
 	$url = SCRAPERWIKI_API_URL."?format=".SCRAPERWIKI_FORMAT."&name=".SCRAPERWIKI_NAME."&query=".$query;
 	return json_decode(file_get_contents($url));
@@ -39,9 +39,9 @@ function formatResponse($direction, $flight_info, $channel) {
 $date = date("m.d.y");
 
 if($currentCall->channel == "VOICE") {
-	say("Thank you for calling my airport test application.");
-	$flight = ask("Please say or enter your numeric flight number.", array("choices" => "[1-4 DIGITS]", "attempts" => 3, "timeout" => 5));
-	$flight_type = ask("Is your flight an arrival or departure?", array("choices" => "arrival, departure", "attempts" => 3, "timeout" => 5));
+	say("Gracias por llamar a excel express cargo.", array("voice" => "Diego"));
+	$flight = ask("Por favor diga o entre su numero de rastreo.", array("voice" => 'Diego', "choices" => "[1-24 DIGITS]", "attempts" => 3, "timeout" => 5));
+	$flight_type = ask("Es un envio maritimo o aereo?", array("choices" => "aereo, maritimo", "attempts" => 3, "timeout" => 5,"voice" => "Diego"));
 	
 	$flight_num = $flight->value;
 	$direction = $flight_type->value;
@@ -56,7 +56,7 @@ else {
 try {
 	$flight_info = getFlightInfo($flight_num, $date, $direction);
 	if(count($flight_info) == 0) {
-		say("No information found for flight $flight_num on $date.");
+		say("No se encotro informacion con el numero $flight_num el $date.", array("voice" => "Diego"));
 	}
 	else {
 		$say = formatResponse($direction, $flight_info[0], $currentCall->channel);
@@ -65,7 +65,7 @@ try {
 }
 
 catch (Exception $ex) {
-	say("Sorry, could not look up flight info. Please try again later.");
+	say("Lo sentimos, no hemos encontrado informacion. por favor intente de nuevo.", array("voice" => "Diego"));
 }
 
 ?>
