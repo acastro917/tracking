@@ -59,7 +59,7 @@ try {
 		say("No se encotro informacion con el numero $flight_num el $date.", array("voice" => "Diego"));
 	}
 	else {
-		$say = formatResponse($direction, $flight_info[0], $currentCall->channel,"voice" => "Diego"));
+		$say = formatResponse($direction, $flight_info[0], $currentCall->channel);
 		say($say);	
 	}
 }
