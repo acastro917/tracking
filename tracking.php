@@ -39,8 +39,8 @@ function formatResponse($direction, $flight_info, $channel) {
 $date = date("m.d.y");
 
 if($currentCall->channel == "VOICE") {
-	say("Gracias por llamar a excel express cargo.", array("voice" => "Diego"));
-	$flight = ask("Por favor diga o entre su numero de rastreo.", array('recognizer' => 'es-cl','voice' => 'Diego', "choices" => "[1-24 DIGITS]", "attempts" => 3, "timeout" => 5));
+	say("Gracias por llamar a ABE CARGO EXPRESS.", array("voice" => "Diego"));
+	$flight = ask("Entre su numero de rastreo.", array('recognizer' => 'es-cl','voice' => 'Diego', "choices" => "[1-24 DIGITS]", "attempts" => 3, "timeout" => 5));
 	$flight_type = ask("Es un envio maritimo o aereo?", array("choices" => "aereo, maritimo", "attempts" => 3, "timeout" => 5,'recognizer' => 'es-cl','voice' => "Diego"));
 	
 	$flight_num = $flight->value;
