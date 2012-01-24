@@ -62,7 +62,7 @@ try {
 	}
 	else {
 		$say = formatResponse($direction, $flight_info[0], $currentCall->channel);
-say($say, array("voice" => "Diego"));	
+say($say); 	
 	}
 }
 
