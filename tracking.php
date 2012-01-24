@@ -3,7 +3,8 @@
 // Constants used to access Scraperwiki API.
 define("SCRAPERWIKI_API_URL", "http://api.scraperwiki.com/api/1.0/datastore/sqlite");
 define("SCRAPERWIKI_FORMAT", "jsondict");
-define("SCRAPERWIKI_NAME", "table1");
+define("SCRAPERWIKI_NAME", "table2");
+define("SCRAPERWIKI_APIKEY", "609390aa-1d9c-4961-8b8e-b5875f36f426");
 define("SCRAPERWIKI_QUERY", "select%20*%20from%20%60swdata%60%20where%20%60flight_num%60%20%3D%20%22[[flight_num]]%22%20and%20date%20%3D%20%22[[date]]%22%20and%20%60flight_type%60%20%3D%20%22[[direction]]%22");
 
 // Function to fetch JSON for a specific flight from Scrapewiki.
@@ -11,7 +12,7 @@ function getFlightInfo($flight_num, $date, $direction) {
 
 $direction = (strtolower($direction) == "d") ? "saliendo" : "llegando";
 $query = str_replace(array("[[flight_num]]", "[[date]]", "[[direction]]"), array($flight_num, $date, $direction), SCRAPERWIKI_QUERY);
-$url = SCRAPERWIKI_API_URL."?format=".SCRAPERWIKI_FORMAT."&name=".SCRAPERWIKI_NAME."&query=".$query;
+$url = SCRAPERWIKI_API_URL."?format=".SCRAPERWIKI_FORMAT."&name=".SCRAPERWIKI_NAME."&apikey=".SCRAPERWIKI_APIKEY."&query=".$query;
 return json_decode(file_get_contents($url));
 
 }
@@ -20,7 +21,7 @@ return json_decode(file_get_contents($url));
 function formatResponse($direction, $flight_info, $channel) {
 
 // Determine if the flight is an arrival or departure.
-$leaveorarrive = (strtolower($direction) == "d") ? "saliendo de" : "viniendo de";
+$leaveorarrive = (strtolower($direction) == "d") ? "MARITIMO" : "AEREO";
 $gate = (strtolower($direction) == "d") ? " de " : " en ";
 
 // Format the flight number for the channel used.
@@ -39,9 +40,9 @@ return $say;
 $date = date("m.d.y");
 
 if($currentCall->channel == "VOICE") {
-say("Gracias por llamar a nuestro estatus de vuleos.", array("voice" => "Diego"));
-$flight = ask("Por favor diga o entre su numero de vuelo.", array('recognizer' => 'es-cl','voice' => 'Diego', "choices" => "[1-4 DIGITS]", "attempts" => 3, "timeout" => 5));
-$flight_type = ask("esta saliendo o llegando?", array("choices" => "llegando, saliendo", "attempts" => 3, "timeout" => 5,'recognizer' => 'es-cl','voice' => "Diego"));
+say("Gracias por llamar a Zigsa Tracking.", array("voice" => "Diego"));
+$flight = ask("Por favor diga o entre su numero de rastreo.", array('recognizer' => 'es-cl','voice' => 'Diego', "choices" => "[1-24 DIGITS]", "attempts" => 3, "timeout" => 5));
+$flight_type = ask("es un envio maritimo o aereo?", array("choices" => "maritimo, aereo", "attempts" => 3, "timeout" => 5,'recognizer' => 'es-cl','voice' => "Diego"));
 
 $flight_num = $flight->value;
 $direction = $flight_type->value;
@@ -56,7 +57,7 @@ $direction = $message[1];
 try {
 $flight_info = getFlightInfo($flight_num, $date, $direction);
 if(count($flight_info) == 0) {
-say("No se encotro informacion con el vuelo $flight_num el $date.", array("voice" => "Diego"));
+say("No se encotro informacion con el numero $flight_num el $date.", array("voice" => "Diego"));
 }
 else {
 $say = formatResponse($direction, $flight_info[0], $currentCall->channel);
