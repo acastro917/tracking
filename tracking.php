@@ -40,7 +40,9 @@ $date = date("m.d.y");
 
 if($currentCall->channel == "VOICE") {
 	say("Gracias por llamar a ABE CARGO EXPRESS.", array("voice" => "Diego"));
-	$flight = ask("Entre su numero de rastreo.", array('recognizer' => 'es-cl','voice' => 'Diego', "choices" => "[1-24 DIGITS]", "attempts" => 3, "timeout" => 5));
+	$flight = ask("Entre su numero de rastreo.", array('mode'=>"dtmf','voice' => 'Diego', "choices" => "[1-24 DIGITS]", "terminator" => "*", "attempts" => 3, "timeout" => 5)); 
+	
+	
 	$flight_type = ask("Es un envio maritimo o aereo?", array("choices" => "aereo, maritimo", "attempts" => 3, "timeout" => 5,'recognizer' => 'es-cl','voice' => "Diego"));
 	
 	$flight_num = $flight->value;
@@ -60,7 +62,7 @@ try {
 	}
 	else {
 		$say = formatResponse($direction, $flight_info[0], $currentCall->channel);
-		say($say);	
+say($say, array("voice" => "Diego"));	
 	}
 }
 
